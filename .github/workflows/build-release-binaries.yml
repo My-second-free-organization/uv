@@ -368,7 +368,8 @@ jobs:
                 # If we're running on debian-based system.
                 apt update -y && apt-get install -y libssl-dev openssl pkg-config
             fi
-            cargo install cargo-auditable --locked
+            rustup target add x86_64-unknown-linux-musl
+            cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
         env:
           CC: ${{ matrix.cc }}
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
@@ -414,7 +415,7 @@ jobs:
           manylinux: 2_17
           docker-options: -e CARGO
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
-          before-script-linux: cargo install cargo-auditable --locked
+          before-script-linux: rustup target add x86_64-unknown-linux-musl && cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - name: "Test wheel uv-build"
@@ -472,7 +473,7 @@ jobs:
           manylinux: ${{ matrix.platform.manylinux }}
           docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           args: --release --locked --out dist --features self-update --compatibility pypi
-          before-script-linux: cargo install cargo-auditable --locked
+          before-script-linux: rustup target add x86_64-unknown-linux-musl && cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
@@ -528,7 +529,7 @@ jobs:
           manylinux: ${{ matrix.platform.manylinux }}
           docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
-          before-script-linux: cargo install cargo-auditable --locked
+          before-script-linux: rustup target add x86_64-unknown-linux-musl && cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
@@ -586,7 +587,7 @@ jobs:
           docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           args: --release --locked --out dist --features self-update --compatibility pypi
           rust-toolchain: ${{ matrix.platform.toolchain || null }}
-          before-script-linux: cargo install cargo-auditable --locked
+          before-script-linux: rustup target add x86_64-unknown-linux-musl && cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
@@ -642,7 +643,7 @@ jobs:
           manylinux: 2_17
           docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
-          before-script-linux: cargo install cargo-auditable --locked
+          before-script-linux: rustup target add x86_64-unknown-linux-musl && cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
@@ -707,7 +708,8 @@ jobs:
                 yum repolist
                 yum install -y gcc-powerpc64-linux-gnu
             fi
-            cargo install cargo-auditable --locked
+            rustup target add x86_64-unknown-linux-musl
+            cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       # TODO(charlie): Re-enable testing for PPC wheels.
@@ -768,7 +770,8 @@ jobs:
                 yum repolist
                 yum install -y gcc-powerpc64-linux-gnu
             fi
-            cargo install cargo-auditable --locked
+            rustup target add x86_64-unknown-linux-musl
+            cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       # TODO(charlie): Re-enable testing for PPC wheels.
@@ -809,7 +812,7 @@ jobs:
           manylinux: 2_31
           docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           args: --release --locked --out dist --features self-update --compatibility pypi
-          before-script-linux: cargo install cargo-auditable --locked
+          before-script-linux: rustup target add x86_64-unknown-linux-musl && cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
@@ -866,7 +869,7 @@ jobs:
           manylinux: 2_31
           docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
-          before-script-linux: cargo install cargo-auditable --locked
+          before-script-linux: rustup target add x86_64-unknown-linux-musl && cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
@@ -922,7 +925,7 @@ jobs:
           manylinux: musllinux_1_1
           docker-options: -e CARGO
           args: --release --locked --out dist --features self-update --compatibility pypi
-          before-script-linux: cargo install cargo-auditable --locked
+          before-script-linux: rustup target add x86_64-unknown-linux-musl && cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - name: "Test wheel"
@@ -973,7 +976,7 @@ jobs:
           manylinux: musllinux_1_1
           docker-options: -e CARGO
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
-          before-script-linux: cargo install cargo-auditable --locked
+          before-script-linux: rustup target add x86_64-unknown-linux-musl && cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - name: "Test wheel uv-build"
@@ -1029,7 +1032,7 @@ jobs:
           args: --release --locked --out dist --features self-update --compatibility 2_17 --compatibility pypi
           docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           rust-toolchain: ${{ matrix.platform.toolchain || null }}
-          before-script-linux: cargo install cargo-auditable --locked
+          before-script-linux: rustup target add x86_64-unknown-linux-musl && cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
@@ -1105,7 +1108,7 @@ jobs:
           args: --profile minimal-size --locked ${{ matrix.platform.arch == 'aarch64' && '--compatibility 2_17' || ''}} --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
           docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           rust-toolchain: ${{ matrix.platform.toolchain || null }}
-          before-script-linux: cargo install cargo-auditable --locked
+          before-script-linux: rustup target add x86_64-unknown-linux-musl && cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
