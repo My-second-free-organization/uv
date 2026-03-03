@@ -97,6 +97,8 @@ jobs:
           architecture: x64
       - name: "Prep README.md"
         run: python scripts/transform_readme.py --target pypi
+      - name: "Install cargo-auditable"
+        run: cargo install cargo-auditable --locked
 
       # uv
       - name: "Build wheels - x86_64"
@@ -105,6 +107,8 @@ jobs:
           maturin-version: v1.12.4
           target: x86_64
           args: --release --locked --out dist --features self-update --compatibility pypi
+        env:
+          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - name: "Upload wheels"
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
@@ -136,6 +140,8 @@ jobs:
           maturin-version: v1.12.4
           target: x86_64
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
+        env:
+          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - name: "Upload wheels uv-build"
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
@@ -156,6 +162,8 @@ jobs:
           architecture: arm64
       - name: "Prep README.md"
         run: python scripts/transform_readme.py --target pypi
+      - name: "Install cargo-auditable"
+        run: cargo install cargo-auditable --locked
 
       # uv
       - name: "Build wheels - aarch64"
@@ -165,6 +173,8 @@ jobs:
           target: aarch64
           manylinux: 2_17
           args: --release --locked --out dist --features self-update --compatibility pypi
+        env:
+          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - name: "Test wheel - aarch64"
         run: |
           pip install ${PACKAGE_NAME} --no-index --find-links dist/ --force-reinstall
@@ -202,6 +212,8 @@ jobs:
           maturin-version: v1.12.4
           target: aarch64
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
+        env:
+          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - name: "Test wheel - aarch64"
         run: |
           pip install ${PACKAGE_NAME}_build --no-index --find-links crates/uv-build/dist --force-reinstall
@@ -239,6 +251,8 @@ jobs:
           architecture: ${{ matrix.platform.arch }}
       - name: "Prep README.md"
         run: python scripts/transform_readme.py --target pypi
+      - name: "Install cargo-auditable"
+        run: cargo install cargo-auditable --locked
 
       # uv
       - name: "Build wheels"
@@ -247,6 +261,8 @@ jobs:
           maturin-version: v1.12.4
           target: ${{ matrix.platform.target }}
           args: --release --locked --out dist --features self-update,windows-gui-bin --compatibility pypi
+        env:
+          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.cmd
       - name: "Test wheel"
         shell: bash
         run: |
@@ -285,6 +301,8 @@ jobs:
           maturin-version: v1.12.4
           target: ${{ matrix.platform.target }}
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
+        env:
+          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.cmd
       - name: "Test wheel uv-build"
         shell: bash
         run: |
