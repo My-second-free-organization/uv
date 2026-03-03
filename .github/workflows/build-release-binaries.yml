@@ -346,6 +346,7 @@ jobs:
           # from 64-bit version of the container, breaking the pattern from other builds.
           container: quay.io/pypa/manylinux2014
           manylinux: 2_17
+          docker-options: -e CARGO
           args: --release --locked --out dist --features self-update --compatibility pypi
           # See: https://github.com/sfackler/rust-openssl/issues/2036#issuecomment-1724324145
           before-script-linux: |
@@ -411,7 +412,9 @@ jobs:
           maturin-version: v1.12.4
           target: ${{ matrix.target }}
           manylinux: 2_17
+          docker-options: -e CARGO
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
+          before-script-linux: cargo install cargo-auditable --locked
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - name: "Test wheel uv-build"
@@ -467,7 +470,7 @@ jobs:
           maturin-version: v1.12.4
           target: ${{ matrix.platform.target }}
           manylinux: ${{ matrix.platform.manylinux }}
-          docker-options: ${{ matrix.platform.maturin_docker_options }}
+          docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           args: --release --locked --out dist --features self-update --compatibility pypi
           before-script-linux: cargo install cargo-auditable --locked
         env:
@@ -523,7 +526,7 @@ jobs:
           maturin-version: v1.12.4
           target: ${{ matrix.platform.target }}
           manylinux: ${{ matrix.platform.manylinux }}
-          docker-options: ${{ matrix.platform.maturin_docker_options }}
+          docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
           before-script-linux: cargo install cargo-auditable --locked
         env:
@@ -580,7 +583,7 @@ jobs:
           maturin-version: v1.12.4
           target: ${{ matrix.platform.target }}
           manylinux: 2_17
-          docker-options: ${{ matrix.platform.maturin_docker_options }}
+          docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           args: --release --locked --out dist --features self-update --compatibility pypi
           rust-toolchain: ${{ matrix.platform.toolchain || null }}
           before-script-linux: cargo install cargo-auditable --locked
@@ -637,7 +640,7 @@ jobs:
           maturin-version: v1.12.4
           target: ${{ matrix.platform.target }}
           manylinux: 2_17
-          docker-options: ${{ matrix.platform.maturin_docker_options }}
+          docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
           before-script-linux: cargo install cargo-auditable --locked
         env:
@@ -695,7 +698,7 @@ jobs:
           maturin-version: v1.12.4
           target: ${{ matrix.platform.target }}
           manylinux: 2_17
-          docker-options: ${{ matrix.platform.maturin_docker_options }}
+          docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           args: --release --locked --out dist --features self-update --compatibility pypi
           before-script-linux: |
             if command -v yum &> /dev/null; then
@@ -756,7 +759,7 @@ jobs:
           maturin-version: v1.12.4
           target: ${{ matrix.platform.target }}
           manylinux: 2_17
-          docker-options: ${{ matrix.platform.maturin_docker_options }}
+          docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
           before-script-linux: |
             if command -v yum &> /dev/null; then
@@ -804,7 +807,7 @@ jobs:
           maturin-version: v1.12.4
           target: ${{ matrix.platform.target }}
           manylinux: 2_31
-          docker-options: ${{ matrix.platform.maturin_docker_options }}
+          docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           args: --release --locked --out dist --features self-update --compatibility pypi
           before-script-linux: cargo install cargo-auditable --locked
         env:
@@ -861,7 +864,7 @@ jobs:
           maturin-version: v1.12.4
           target: ${{ matrix.platform.target }}
           manylinux: 2_31
-          docker-options: ${{ matrix.platform.maturin_docker_options }}
+          docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
           before-script-linux: cargo install cargo-auditable --locked
         env:
@@ -917,6 +920,7 @@ jobs:
           maturin-version: v1.12.4
           target: ${{ matrix.target }}
           manylinux: musllinux_1_1
+          docker-options: -e CARGO
           args: --release --locked --out dist --features self-update --compatibility pypi
           before-script-linux: cargo install cargo-auditable --locked
         env:
@@ -967,6 +971,7 @@ jobs:
           maturin-version: v1.12.4
           target: ${{ matrix.target }}
           manylinux: musllinux_1_1
+          docker-options: -e CARGO
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
           before-script-linux: cargo install cargo-auditable --locked
         env:
@@ -1022,7 +1027,7 @@ jobs:
           manylinux: musllinux_1_1
           # Tag the musl builds as manylinux 2_17 fallback cause the aarch64 build only support 2_28
           args: --release --locked --out dist --features self-update --compatibility 2_17 --compatibility pypi
-          docker-options: ${{ matrix.platform.maturin_docker_options }}
+          docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           rust-toolchain: ${{ matrix.platform.toolchain || null }}
           before-script-linux: cargo install cargo-auditable --locked
         env:
@@ -1098,7 +1103,7 @@ jobs:
           target: ${{ matrix.platform.target }}
           manylinux: musllinux_1_1
           args: --profile minimal-size --locked ${{ matrix.platform.arch == 'aarch64' && '--compatibility 2_17' || ''}} --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
-          docker-options: ${{ matrix.platform.maturin_docker_options }}
+          docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           rust-toolchain: ${{ matrix.platform.toolchain || null }}
           before-script-linux: cargo install cargo-auditable --locked
         env:
