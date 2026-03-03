@@ -1,17 +1,8 @@
 @echo off
-REM Wrapper script that invokes `cargo auditable` instead of plain `cargo`.
+REM Top-level cargo wrapper for release builds.
 REM
-REM Usage:
-REM   cargo install cargo-auditable --locked
-REM   set CARGO=%CD%\scripts\cargo.cmd
-REM   maturin build --release
-REM
-REM The wrapper inserts the `auditable` subcommand so that dependency metadata
-REM (SBOM) is embedded into every compiled binary. See:
-REM   https://github.com/rust-secure-code/cargo-auditable
+REM Chains cargo-code-sign (post-build binary signing) with cargo-auditable
+REM (SBOM embedding). See cargo.sh for the full explanation.
 
-if defined REAL_CARGO (
-    "%REAL_CARGO%" auditable %*
-) else (
-    cargo.exe auditable %*
-)
+set CARGO_CODE_SIGN_CARGO=%~dp0cargo-auditable.cmd
+%~dp0cargo-code-sign.cmd %*
