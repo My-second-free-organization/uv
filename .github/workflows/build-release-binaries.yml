@@ -367,8 +367,10 @@ jobs:
                 # If we're running on debian-based system.
                 apt update -y && apt-get install -y libssl-dev openssl pkg-config
             fi
+            cargo install cargo-auditable --locked
         env:
           CC: ${{ matrix.cc }}
+          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - name: "Test wheel"
         if: ${{ startsWith(matrix.target, 'x86_64') }}
         run: |
@@ -410,6 +412,8 @@ jobs:
           target: ${{ matrix.target }}
           manylinux: 2_17
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
+        env:
+          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - name: "Test wheel uv-build"
         if: ${{ startsWith(matrix.target, 'x86_64') }}
         run: |
@@ -465,6 +469,9 @@ jobs:
           manylinux: ${{ matrix.platform.manylinux }}
           docker-options: ${{ matrix.platform.maturin_docker_options }}
           args: --release --locked --out dist --features self-update --compatibility pypi
+          before-script-linux: cargo install cargo-auditable --locked
+        env:
+          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
         name: "Test wheel"
         with:
@@ -518,6 +525,9 @@ jobs:
           manylinux: ${{ matrix.platform.manylinux }}
           docker-options: ${{ matrix.platform.maturin_docker_options }}
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
+          before-script-linux: cargo install cargo-auditable --locked
+        env:
+          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
         name: "Test wheel uv-build"
         with:
@@ -573,6 +583,9 @@ jobs:
           docker-options: ${{ matrix.platform.maturin_docker_options }}
           args: --release --locked --out dist --features self-update --compatibility pypi
           rust-toolchain: ${{ matrix.platform.toolchain || null }}
+          before-script-linux: cargo install cargo-auditable --locked
+        env:
+          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
         name: "Test wheel"
         with:
@@ -626,6 +639,9 @@ jobs:
           manylinux: 2_17
           docker-options: ${{ matrix.platform.maturin_docker_options }}
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
+          before-script-linux: cargo install cargo-auditable --locked
+        env:
+          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
         name: "Test wheel uv-build"
         with:
@@ -688,6 +704,9 @@ jobs:
                 yum repolist
                 yum install -y gcc-powerpc64-linux-gnu
             fi
+            cargo install cargo-auditable --locked
+        env:
+          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       # TODO(charlie): Re-enable testing for PPC wheels.
       # - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
       #   name: "Test wheel"
@@ -746,6 +765,9 @@ jobs:
                 yum repolist
                 yum install -y gcc-powerpc64-linux-gnu
             fi
+            cargo install cargo-auditable --locked
+        env:
+          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       # TODO(charlie): Re-enable testing for PPC wheels.
       - name: "Upload wheels uv-build"
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -784,6 +806,9 @@ jobs:
           manylinux: 2_31
           docker-options: ${{ matrix.platform.maturin_docker_options }}
           args: --release --locked --out dist --features self-update --compatibility pypi
+          before-script-linux: cargo install cargo-auditable --locked
+        env:
+          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
         name: "Test wheel"
         with:
@@ -838,6 +863,9 @@ jobs:
           manylinux: 2_31
           docker-options: ${{ matrix.platform.maturin_docker_options }}
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
+          before-script-linux: cargo install cargo-auditable --locked
+        env:
+          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
         name: "Test wheel uv-build"
         with:
@@ -890,6 +918,9 @@ jobs:
           target: ${{ matrix.target }}
           manylinux: musllinux_1_1
           args: --release --locked --out dist --features self-update --compatibility pypi
+          before-script-linux: cargo install cargo-auditable --locked
+        env:
+          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - name: "Test wheel"
         if: matrix.target == 'x86_64-unknown-linux-musl'
         run: |
@@ -937,6 +968,9 @@ jobs:
           target: ${{ matrix.target }}
           manylinux: musllinux_1_1
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
+          before-script-linux: cargo install cargo-auditable --locked
+        env:
+          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - name: "Test wheel uv-build"
         if: matrix.target == 'x86_64-unknown-linux-musl'
         run: |
@@ -990,6 +1024,9 @@ jobs:
           args: --release --locked --out dist --features self-update --compatibility 2_17 --compatibility pypi
           docker-options: ${{ matrix.platform.maturin_docker_options }}
           rust-toolchain: ${{ matrix.platform.toolchain || null }}
+          before-script-linux: cargo install cargo-auditable --locked
+        env:
+          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
         name: "Test wheel"
         with:
@@ -1063,6 +1100,9 @@ jobs:
           args: --profile minimal-size --locked ${{ matrix.platform.arch == 'aarch64' && '--compatibility 2_17' || ''}} --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
           docker-options: ${{ matrix.platform.maturin_docker_options }}
           rust-toolchain: ${{ matrix.platform.toolchain || null }}
+          before-script-linux: cargo install cargo-auditable --locked
+        env:
+          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
         name: "Test wheel"
         with:
