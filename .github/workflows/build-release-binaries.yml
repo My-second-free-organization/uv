@@ -98,7 +98,7 @@ jobs:
       - name: "Prep README.md"
         run: python scripts/transform_readme.py --target pypi
       - name: "Install cargo-auditable"
-        run: cargo install cargo-auditable --locked
+        run: cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
 
       # uv
       - name: "Build wheels - x86_64"
@@ -163,7 +163,7 @@ jobs:
       - name: "Prep README.md"
         run: python scripts/transform_readme.py --target pypi
       - name: "Install cargo-auditable"
-        run: cargo install cargo-auditable --locked
+        run: cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
 
       # uv
       - name: "Build wheels - aarch64"
@@ -252,7 +252,7 @@ jobs:
       - name: "Prep README.md"
         run: python scripts/transform_readme.py --target pypi
       - name: "Install cargo-auditable"
-        run: cargo install cargo-auditable --locked
+        run: cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
 
       # uv
       - name: "Build wheels"
@@ -371,9 +371,9 @@ jobs:
             rustup target add x86_64-unknown-linux-musl
             if ldd --version 2>&1 | grep -q musl; then
                 rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
             else
-                cargo install cargo-auditable --locked
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
             fi
         env:
           CC: ${{ matrix.cc }}
@@ -423,9 +423,9 @@ jobs:
           before-script-linux: |
             if ldd --version 2>&1 | grep -q musl; then
                 rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
             else
-                cargo install cargo-auditable --locked
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
             fi
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
@@ -487,9 +487,9 @@ jobs:
           before-script-linux: |
             if ldd --version 2>&1 | grep -q musl; then
                 rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
             else
-                cargo install cargo-auditable --locked
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
             fi
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
@@ -549,9 +549,9 @@ jobs:
           before-script-linux: |
             if ldd --version 2>&1 | grep -q musl; then
                 rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
             else
-                cargo install cargo-auditable --locked
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
             fi
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
@@ -613,9 +613,9 @@ jobs:
           before-script-linux: |
             if ldd --version 2>&1 | grep -q musl; then
                 rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
             else
-                cargo install cargo-auditable --locked
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
             fi
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
@@ -675,9 +675,9 @@ jobs:
           before-script-linux: |
             if ldd --version 2>&1 | grep -q musl; then
                 rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
             else
-                cargo install cargo-auditable --locked
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
             fi
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
@@ -745,9 +745,9 @@ jobs:
             fi
             if ldd --version 2>&1 | grep -q musl; then
                 rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
             else
-                cargo install cargo-auditable --locked
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
             fi
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
@@ -811,9 +811,9 @@ jobs:
             fi
             if ldd --version 2>&1 | grep -q musl; then
                 rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
             else
-                cargo install cargo-auditable --locked
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
             fi
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
@@ -858,9 +858,9 @@ jobs:
           before-script-linux: |
             if ldd --version 2>&1 | grep -q musl; then
                 rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
             else
-                cargo install cargo-auditable --locked
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
             fi
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
@@ -921,9 +921,9 @@ jobs:
           before-script-linux: |
             if ldd --version 2>&1 | grep -q musl; then
                 rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
             else
-                cargo install cargo-auditable --locked
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
             fi
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
@@ -983,9 +983,9 @@ jobs:
           before-script-linux: |
             if ldd --version 2>&1 | grep -q musl; then
                 rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
             else
-                cargo install cargo-auditable --locked
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
             fi
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
@@ -1040,9 +1040,9 @@ jobs:
           before-script-linux: |
             if ldd --version 2>&1 | grep -q musl; then
                 rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
             else
-                cargo install cargo-auditable --locked
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
             fi
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
@@ -1102,9 +1102,9 @@ jobs:
           before-script-linux: |
             if ldd --version 2>&1 | grep -q musl; then
                 rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
             else
-                cargo install cargo-auditable --locked
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
             fi
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
@@ -1184,9 +1184,9 @@ jobs:
           before-script-linux: |
             if ldd --version 2>&1 | grep -q musl; then
                 rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --target x86_64-unknown-linux-musl
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
             else
-                cargo install cargo-auditable --locked
+                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
             fi
         env:
           CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
