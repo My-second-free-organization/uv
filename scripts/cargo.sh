@@ -5,7 +5,7 @@
 ##   cargo install cargo-auditable --locked
 ##
 ## Usage:
-##   CARGO="$PWD/scripts/cargo-wrapper.sh" cargo build --release
+##   CARGO="$PWD/scripts/cargo.sh" cargo build --release
 
 set -eu
 

@@ -3,7 +3,7 @@ REM Wrapper script that invokes `cargo auditable` instead of plain `cargo`.
 REM
 REM Usage:
 REM   cargo install cargo-auditable --locked
-REM   set CARGO=%CD%\scripts\cargo-wrapper.cmd
+REM   set CARGO=%CD%\scripts\cargo.cmd
 REM   maturin build --release
 REM
 REM The wrapper inserts the `auditable` subcommand so that dependency metadata

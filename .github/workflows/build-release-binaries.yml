@@ -97,8 +97,9 @@ jobs:
           architecture: x64
       - name: "Prep README.md"
         run: python scripts/transform_readme.py --target pypi
-      - name: "Install cargo-auditable"
-        run: cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
+      - name: "Install cargo extensions"
+        shell: bash
+        run: scripts/install-cargo-extensions.sh
 
       # uv
       - name: "Build wheels - x86_64"
@@ -108,7 +109,7 @@ jobs:
           target: x86_64
           args: --release --locked --out dist --features self-update --compatibility pypi
         env:
-          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
+          CARGO: ${{ github.workspace }}/scripts/cargo.sh
       - name: "Upload wheels"
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
@@ -141,7 +142,7 @@ jobs:
           target: x86_64
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
         env:
-          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
+          CARGO: ${{ github.workspace }}/scripts/cargo.sh
       - name: "Upload wheels uv-build"
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
@@ -162,8 +163,9 @@ jobs:
           architecture: arm64
       - name: "Prep README.md"
         run: python scripts/transform_readme.py --target pypi
-      - name: "Install cargo-auditable"
-        run: cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
+      - name: "Install cargo extensions"
+        shell: bash
+        run: scripts/install-cargo-extensions.sh
 
       # uv
       - name: "Build wheels - aarch64"
@@ -174,7 +176,7 @@ jobs:
           manylinux: 2_17
           args: --release --locked --out dist --features self-update --compatibility pypi
         env:
-          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
+          CARGO: ${{ github.workspace }}/scripts/cargo.sh
       - name: "Test wheel - aarch64"
         run: |
           pip install ${PACKAGE_NAME} --no-index --find-links dist/ --force-reinstall
@@ -213,7 +215,7 @@ jobs:
           target: aarch64
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
         env:
-          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
+          CARGO: ${{ github.workspace }}/scripts/cargo.sh
       - name: "Test wheel - aarch64"
         run: |
           pip install ${PACKAGE_NAME}_build --no-index --find-links crates/uv-build/dist --force-reinstall
@@ -251,8 +253,9 @@ jobs:
           architecture: ${{ matrix.platform.arch }}
       - name: "Prep README.md"
         run: python scripts/transform_readme.py --target pypi
-      - name: "Install cargo-auditable"
-        run: cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
+      - name: "Install cargo extensions"
+        shell: bash
+        run: scripts/install-cargo-extensions.sh
 
       # uv
       - name: "Build wheels"
@@ -262,7 +265,7 @@ jobs:
           target: ${{ matrix.platform.target }}
           args: --release --locked --out dist --features self-update,windows-gui-bin --compatibility pypi
         env:
-          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.cmd
+          CARGO: ${{ github.workspace }}/scripts/cargo.cmd
       - name: "Test wheel"
         shell: bash
         run: |
@@ -302,7 +305,7 @@ jobs:
           target: ${{ matrix.platform.target }}
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
         env:
-          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.cmd
+          CARGO: ${{ github.workspace }}/scripts/cargo.cmd
       - name: "Test wheel uv-build"
         shell: bash
         run: |
@@ -368,18 +371,11 @@ jobs:
                 # If we're running on debian-based system.
                 apt update -y && apt-get install -y libssl-dev openssl pkg-config
             fi
-            # Install cargo-auditable as a static musl binary so it runs in any container.
-            # On i686 containers, the 32-bit linker can't produce 64-bit musl binaries,
-            # so we fall back to a default (host-native) build which works in glibc containers.
-            if [ "$(uname -m)" = "x86_64" ]; then
-                rustup target add x86_64-unknown-linux-musl
-                CC=gcc cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
-            else
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
-            fi
+            # Install cargo extensions as a static musl binary so it runs in any container.
+            scripts/install-cargo-extensions.sh
         env:
           CC: ${{ matrix.cc }}
-          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
+          CARGO: ${{ github.workspace }}/scripts/cargo.sh
       - name: "Test wheel"
         if: ${{ startsWith(matrix.target, 'x86_64') }}
         run: |
@@ -423,14 +419,9 @@ jobs:
           docker-options: -e CARGO
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
           before-script-linux: |
-            if [ "$(uname -m)" = "x86_64" ]; then
-                rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
-            else
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
-            fi
+            scripts/install-cargo-extensions.sh
         env:
-          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
+          CARGO: ${{ github.workspace }}/scripts/cargo.sh
       - name: "Test wheel uv-build"
         if: ${{ startsWith(matrix.target, 'x86_64') }}
         run: |
@@ -487,14 +478,9 @@ jobs:
           docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           args: --release --locked --out dist --features self-update --compatibility pypi
           before-script-linux: |
-            if [ "$(uname -m)" = "x86_64" ]; then
-                rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
-            else
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
-            fi
+            scripts/install-cargo-extensions.sh
         env:
-          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
+          CARGO: ${{ github.workspace }}/scripts/cargo.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
         name: "Test wheel"
         with:
@@ -549,14 +535,9 @@ jobs:
           docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
           before-script-linux: |
-            if [ "$(uname -m)" = "x86_64" ]; then
-                rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
-            else
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
-            fi
+            scripts/install-cargo-extensions.sh
         env:
-          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
+          CARGO: ${{ github.workspace }}/scripts/cargo.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
         name: "Test wheel uv-build"
         with:
@@ -613,14 +594,9 @@ jobs:
           args: --release --locked --out dist --features self-update --compatibility pypi
           rust-toolchain: ${{ matrix.platform.toolchain || null }}
           before-script-linux: |
-            if [ "$(uname -m)" = "x86_64" ]; then
-                rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
-            else
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
-            fi
+            scripts/install-cargo-extensions.sh
         env:
-          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
+          CARGO: ${{ github.workspace }}/scripts/cargo.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
         name: "Test wheel"
         with:
@@ -675,14 +651,9 @@ jobs:
           docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
           before-script-linux: |
-            if [ "$(uname -m)" = "x86_64" ]; then
-                rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
-            else
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
-            fi
+            scripts/install-cargo-extensions.sh
         env:
-          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
+          CARGO: ${{ github.workspace }}/scripts/cargo.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
         name: "Test wheel uv-build"
         with:
@@ -745,10 +716,9 @@ jobs:
                 yum repolist
                 yum install -y gcc-powerpc64-linux-gnu
             fi
-            rustup target add x86_64-unknown-linux-musl
-            cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
+            scripts/install-cargo-extensions.sh
         env:
-          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
+          CARGO: ${{ github.workspace }}/scripts/cargo.sh
       # TODO(charlie): Re-enable testing for PPC wheels.
       # - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
       #   name: "Test wheel"
@@ -807,10 +777,9 @@ jobs:
                 yum repolist
                 yum install -y gcc-powerpc64-linux-gnu
             fi
-            rustup target add x86_64-unknown-linux-musl
-            cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
+            scripts/install-cargo-extensions.sh
         env:
-          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
+          CARGO: ${{ github.workspace }}/scripts/cargo.sh
       # TODO(charlie): Re-enable testing for PPC wheels.
       - name: "Upload wheels uv-build"
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -850,14 +819,9 @@ jobs:
           docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           args: --release --locked --out dist --features self-update --compatibility pypi
           before-script-linux: |
-            if [ "$(uname -m)" = "x86_64" ]; then
-                rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
-            else
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
-            fi
+            scripts/install-cargo-extensions.sh
         env:
-          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
+          CARGO: ${{ github.workspace }}/scripts/cargo.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
         name: "Test wheel"
         with:
@@ -913,14 +877,9 @@ jobs:
           docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
           before-script-linux: |
-            if [ "$(uname -m)" = "x86_64" ]; then
-                rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
-            else
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
-            fi
+            scripts/install-cargo-extensions.sh
         env:
-          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
+          CARGO: ${{ github.workspace }}/scripts/cargo.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
         name: "Test wheel uv-build"
         with:
@@ -975,14 +934,9 @@ jobs:
           docker-options: -e CARGO
           args: --release --locked --out dist --features self-update --compatibility pypi
           before-script-linux: |
-            if [ "$(uname -m)" = "x86_64" ]; then
-                rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
-            else
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
-            fi
+            scripts/install-cargo-extensions.sh
         env:
-          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
+          CARGO: ${{ github.workspace }}/scripts/cargo.sh
       - name: "Test wheel"
         if: matrix.target == 'x86_64-unknown-linux-musl'
         run: |
@@ -1032,14 +986,9 @@ jobs:
           docker-options: -e CARGO
           args: --profile minimal-size --locked --out crates/uv-build/dist -m crates/uv-build/Cargo.toml --compatibility pypi
           before-script-linux: |
-            if [ "$(uname -m)" = "x86_64" ]; then
-                rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
-            else
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
-            fi
+            scripts/install-cargo-extensions.sh
         env:
-          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
+          CARGO: ${{ github.workspace }}/scripts/cargo.sh
       - name: "Test wheel uv-build"
         if: matrix.target == 'x86_64-unknown-linux-musl'
         run: |
@@ -1094,14 +1043,9 @@ jobs:
           docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           rust-toolchain: ${{ matrix.platform.toolchain || null }}
           before-script-linux: |
-            if [ "$(uname -m)" = "x86_64" ]; then
-                rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
-            else
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
-            fi
+            scripts/install-cargo-extensions.sh
         env:
-          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
+          CARGO: ${{ github.workspace }}/scripts/cargo.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
         name: "Test wheel"
         with:
@@ -1176,14 +1120,9 @@ jobs:
           docker-options: -e CARGO ${{ matrix.platform.maturin_docker_options }}
           rust-toolchain: ${{ matrix.platform.toolchain || null }}
           before-script-linux: |
-            if [ "$(uname -m)" = "x86_64" ]; then
-                rustup target add x86_64-unknown-linux-musl
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win --target x86_64-unknown-linux-musl
-            else
-                cargo install cargo-auditable --locked --git https://github.com/zanieb/cargo-auditable.git --branch zb/i686-win
-            fi
+            scripts/install-cargo-extensions.sh
         env:
-          CARGO: ${{ github.workspace }}/scripts/cargo-wrapper.sh
+          CARGO: ${{ github.workspace }}/scripts/cargo.sh
       - uses: uraimo/run-on-arch-action@d94c13912ea685de38fccc1109385b83fd79427d # v3.0.1
         name: "Test wheel"
         with:
